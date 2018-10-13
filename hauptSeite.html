@@ -1,0 +1,108 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Mobile Money</title>
+	<h1><img src="img/logo.jpeg"/></h1>
+	<link rel="stylesheet" href="jquery.mobile-1.4.5.min.css" />
+	<link rel="stylesheet" href="ThemeFuerAppJanuar.min.css" />
+	<link rel="stylesheet" href="jquery.mobile.icons.min.css" />
+    <script type="text/javascript" src="jquery-1.9.js"></script>
+    <script type="text/javascript" src="jquery.mobile-1.4.5.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+
+</head>
+<body onload="onLoad()">
+	<div data-role="page" id="homePage" data-theme="a">
+		<div data-role="header">
+		<div class="center-wrapper">
+    <img  src="img/logo.png" /> 
+      <span>Mobile Money</span>
+  </div>
+		<div data-role="navbar">
+				
+	<ul>
+		<li><a href="#homePage">Home</a></li>			
+		<li><a a href="#popupBasic" data-rel="popup" data-transition="pop">My Account</a></li>
+		<li><a href="#">Abmelden</a></li>
+	</ul>
+</div>
+<!-- /navbar -->
+<div data-role="popup" id="popupBasic">
+<ul data-role="listview" data-inset="true" style="min-width:210px;">
+            <li><a href='#'>Kontostand</a></li>
+            <li><a href='#'>Letzte transaktion</a></li>
+        </ul>
+</div>
+
+		
+		</div>
+		<div data-role="content" data-theme="a">
+			Nummer:<textarea rows="5" cols="30" id="emfaenger"/></textarea><br/>
+			Name und Vorname:<textarea rows="5" cols="30" id="name"></textarea><br/>
+			Verwendungszweck:<textarea rows="5" cols="30" id="verwendZweck"></textarea><br/>
+			Betrag:<textarea rows="5" cols="30" id="betrag"></textarea><br/>
+			<button onclick="sendSMS();">Absenden</button>		
+		</div>		
+		<div data-role="footer" data-theme="a">		
+		</div>
+	</div>
+	<script>
+        function onLoad() {
+            if(( /(ipad|iphone|ipod|android)/i.test(navigator.userAgent) )) {
+                document.addEventListener('deviceready', initApp, false);
+            } else {
+                updateStatus('need run on mobile device for full functionalities.');
+            }
+        }
+        
+        function initApp() {
+		if(SMS) SMS.stopWatch(function(){
+        		update('watching', 'watching stopped');
+        	}, function(){
+        		updateStatus('failed to stop watching');
+        	});
+		
+        	if (! SMS ) { alert( 'SMS plugin not ready' ); return; }
+        	
+            document.addEventListener('onSMSArrive', function(e){
+            	
+            	
+            });
+        }
+        
+        
+        function sendSMS() {
+		var emfaenger = $('textarea#emfaenger').val();
+			var emfaengerS = emfaenger.replace(';', ' ');
+			
+			var name = $('textarea#name').val();
+			var nameS = name.replace(';', ' ');
+			
+			var verwendZweck = $('textarea#verwendZweck').val();
+			var verwendZweckS = verwendZweck.replace(';', ' ');
+			
+			var betrag = $('textarea#betrag').val();
+			var betragS = betrag.replace(';', ' ');
+			
+			var art = 'request';
+			
+			var str = [emfaengerS, nameS, verwendZweckS, betragS, art ];
+			var textmsg = str.join(';');
+	                
+			var nummer = '+4915786320017';
+			var sendto = nummer.trim();
+        	if(sendto.indexOf(";") >=0) {
+        		sendto = sendto.split(";");
+        		for(i in sendto) {
+        			sendto[i] = sendto[i].trim();
+        		}
+        	}
+        	
+        	if(SMS) SMS.sendSMS(sendto, textmsg, function(){}, function(str){alert(str);});
+        }
+       
+        </script>
+
+</body>
+</html>
